@@ -9,10 +9,17 @@ const Img = styled.img`
   width: auto;
 `;
 
+const StyledName = styled.div`
+  font-weight: 500;
+  font-size: 1.6rem;
+  letter-spacing: 2px;
+`;
+
 function Logo() {
   return (
     <StyledLogo>
-      <Img src="/logo-light.png" alt="Logo" />
+      <Img src="../assets/Continental-Logo.png" alt="Logo" />
+      <StyledName>The Continental</StyledName>
     </StyledLogo>
   );
 }
