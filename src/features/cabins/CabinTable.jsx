@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 import { useQuery } from "@tanstack/react-query";
-import getCabins from "../../services/apiCabins.js";
+import { getCabins } from "../../services/apiCabins.js";
 import Spinner from "../../ui/Spinner";
 import CabinRow from "./CabinRow.jsx";
 
@@ -35,7 +35,7 @@ const CabinTable = () => {
     error,
     isLoading,
   } = useQuery({
-    queryKey: ["cabin"], // uniquely identifies the query data for caching
+    queryKey: ["cabins"], // uniquely identifies the query data for caching
     queryFn: getCabins, // function needs to return a promise
   });
 
