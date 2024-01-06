@@ -33,8 +33,8 @@ function CreateCabinForm() {
   });
 
   function onSubmit(data) {
-    // console.log(data);
-    mutate(data);
+    console.log(data);
+    mutate({ ...data, image: data.image[0] });
   }
 
   function onError(errors) {
@@ -42,7 +42,7 @@ function CreateCabinForm() {
   }
 
   // console.log(isPending);
-  console.log(getValues?.regularPrice);
+  // console.log(getValues?.regularPrice);
 
   return (
     // Each time we submit our form , onSubmit function will be called by react query form ; In case any of the valudations fail , onError function will be called
@@ -116,7 +116,14 @@ function CreateCabinForm() {
       </FormRow>
 
       <FormRow label="Cabin Photo">
-        <FileInput id="image" accept="image/*" disabled={isPending} />
+        <FileInput
+          id="image"
+          {...register("image", {
+            required: "This field is required",
+          })}
+          accept="image/*"
+          disabled={isPending}
+        />
       </FormRow>
 
       <FormRow>
