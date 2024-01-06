@@ -41,8 +41,6 @@ const Error = styled.span`
 const FormRow = ({ label, error, children }) => {
   return (
     <StyledFormRow>
-      {/* {label && <Label htmlFor="name">{label}</Label>} */}
-      {/* As we have only one children and they are connected by id. So we use this trick to connect label to input */}
       {label && <Label htmlFor={children.props.id}>{label}</Label>}
       {children}
       {error && <Error>{error}</Error>}
