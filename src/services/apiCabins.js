@@ -29,37 +29,19 @@ export async function createEditCabin(newCabin, id) {
   let query = supabase.from("cabins");
 
   // A. Create Cabin
-  if (!id) {
-    // 1. Create cabin
-    // query
-    //   .insert([{ ...newCabin, image: imagePath }])
-    //   .select()
-    //   .single(); // By default the insert function will not immediately return the newly created row ;
-    // // so we need to return the data from here using .select() and .single()
-
-    query = query.insert([{ ...newCabin, image: imagePath }]);
-
-    const { data, error } = await query.select().single(); // this kind of technique is often used when we want to reuse a query
-
-    if (error) {
-      console.error(error);
-      throw new Error(`Cabin could not be created.`);
-    }
-  }
-
+  if (!id) query = query.insert([{ ...newCabin, image: imagePath }]);
   // 2. Edit Cabin
-  if (id) {
-    query = query.update({ ...newCabin, image: imagePath }).eq("id", id);
+  if (id) query = query.update({ ...newCabin, image: imagePath }).eq("id", id);
 
-    const { data, error } = await query.select().single();
+  const { data, error } = await query.select().single();
 
-    if (error) {
-      console.error(error);
-      throw new Error(`Cabin could not be edited.`);
-    }
+  if (error) {
+    console.error(error);
+    throw new Error(`Cabin could not be edited.`);
   }
 
   // 2. Upload image
+  if (hasImagePath) return data;
 
   const { error: storageError } = await supabase.storage
     .from("cabin-images")

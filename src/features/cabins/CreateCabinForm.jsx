@@ -4,11 +4,9 @@ import Button from "../../ui/Button";
 import FileInput from "../../ui/FileInput";
 import Textarea from "../../ui/Textarea";
 import { useForm } from "react-hook-form";
-import { useMutation } from "@tanstack/react-query";
-import { toast } from "react-hot-toast";
-import { createEditCabin } from "../../services/apiCabins.js";
-import { useQueryClient } from "@tanstack/react-query";
 import FormRow from "../../ui/FormRow.jsx";
+import { useCreateCabin } from "./useCreateCabin.js";
+import { useEditCabin } from "./useEditCabin.js";
 
 function CreateCabinForm({ cabinToEdit = {} }) {
   const { id: editId, ...editValues } = cabinToEdit;
@@ -20,31 +18,8 @@ function CreateCabinForm({ cabinToEdit = {} }) {
   // using formState we can access to all the errors which we are logging in the console.
   const { errors } = formState;
 
-  const queryClient = useQueryClient();
-
-  const { mutate: createCabin, isPending: isCreating } = useMutation({
-    mutationFn: createEditCabin,
-    onSuccess: () => {
-      toast.success("Cabin has been created successfully.");
-      queryClient.invalidateQueries({
-        queryKeys: ["cabins"],
-      });
-      reset();
-    },
-
-    onError: (err) => {
-      toast.error(err.message);
-    },
-  });
-
-  const { mutate: editCabin, isPending: isEditing } = useMutation({
-    mutationFn: ({ newCabinData, id }) => createEditCabin(newCabinData, id),
-    onSuccess: () => {
-      toast.success("Cabin has been edited successfully.");
-      queryClient.invalidateQueries({ queryKeys: ["cabins"] });
-      reset();
-    },
-  });
+  const { isCreating, createCabin } = useCreateCabin();
+  const { isEditing, editCabin } = useEditCabin();
 
   const isWorking = isCreating || isEditing;
 
@@ -52,12 +27,29 @@ function CreateCabinForm({ cabinToEdit = {} }) {
     // console.log(data);
     const image = typeof data.image === "string" ? data.image : data.image[0];
     if (isEditSession) {
-      editCabin({ newCabinData: { ...data, image: image }, id: editId });
-    } else createCabin({ ...data, image: image });
+      editCabin(
+        { newCabinData: { ...data, image: image }, id: editId },
+        {
+          onSuccess: (data) => {
+            console.log(data);
+            reset();
+          },
+        }
+      );
+    } else
+      createCabin(
+        { ...data, image: image },
+        {
+          onSuccess: (data) => {
+            console.log(data);
+            reset(); // This callback funciton also gets access to the data returned by the mutation function
+          },
+        }
+      ); // we can also use onSuccess handler right here where the mutation happens.
   }
 
   function onError(errors) {
-    // console.log(errors);
+    console.log(errors);
   }
 
   // console.log(isPending);
