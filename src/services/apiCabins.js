@@ -11,20 +11,52 @@ export async function getCabins() {
   return data;
 }
 
-export async function createCabin(newCabin) {
+// Reusing the create function for both adding and deleting data.
+
+export async function createEditCabin(newCabin, id) {
+  // console.log(newCabin, id);
+  const hasImagePath = newCabin.image?.startsWith?.(supabaseUrl);
+
   const imageName = `${Math.random()}-${newCabin.image.name}`.replaceAll(
     "/",
     ""
   );
-  const imagePath = `${supabaseUrl}/storage/v1/object/public/cabin-images/${imageName}`;
-  // 1. Create cabin
-  const { data, error } = await supabase
-    .from("cabins")
-    .insert([{ ...newCabin, image: imagePath }])
-    .select();
-  if (error) {
-    console.error(error);
-    throw new Error(`Cabin could not be created.`);
+  const imagePath = hasImagePath
+    ? newCabin.image
+    : `${supabaseUrl}/storage/v1/object/public/cabin-images/${imageName}`;
+  // We will create a new cabin only if there is no id which means it is edit cabin
+
+  let query = supabase.from("cabins");
+
+  // A. Create Cabin
+  if (!id) {
+    // 1. Create cabin
+    // query
+    //   .insert([{ ...newCabin, image: imagePath }])
+    //   .select()
+    //   .single(); // By default the insert function will not immediately return the newly created row ;
+    // // so we need to return the data from here using .select() and .single()
+
+    query = query.insert([{ ...newCabin, image: imagePath }]);
+
+    const { data, error } = await query.select().single(); // this kind of technique is often used when we want to reuse a query
+
+    if (error) {
+      console.error(error);
+      throw new Error(`Cabin could not be created.`);
+    }
+  }
+
+  // 2. Edit Cabin
+  if (id) {
+    query = query.update({ ...newCabin, image: imagePath }).eq("id", id);
+
+    const { data, error } = await query.select().single();
+
+    if (error) {
+      console.error(error);
+      throw new Error(`Cabin could not be edited.`);
+    }
   }
 
   // 2. Upload image
