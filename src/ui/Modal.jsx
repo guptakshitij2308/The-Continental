@@ -1,3 +1,5 @@
+import { createPortal } from "react-dom";
+import { HiXMark } from "react-icons/hi2";
 import styled from "styled-components";
 
 const StyledModal = styled.div`
@@ -48,3 +50,36 @@ const Button = styled.button`
     color: var(--color-grey-500);
   }
 `;
+
+function Modal({ children, onClose }) {
+  // React portal : A feature which allows us to render and element outside the parent's
+  // component dom structure while maintaining the same position in the component tree.
+  // The use of this is in order to avoid conficts with css properties of overflow set to hidden.
+
+  // return (
+  //   <Overlay>
+  //     <StyledModal>
+  //       <Button onClick={onClose}>
+  //         <HiXMark />
+  //       </Button>
+  //       {children}
+  //     </StyledModal>
+  //     ;
+  //   </Overlay>
+  // );
+
+  return createPortal(
+    <Overlay>
+      <StyledModal>
+        <Button onClick={onClose}>
+          <HiXMark />
+        </Button>
+        {children}
+      </StyledModal>
+      ;
+    </Overlay>,
+    document.body
+  ); // first arguement of createPortal is jsx and second is where we want to place it in the dom (dom node).
+}
+
+export default Modal;
