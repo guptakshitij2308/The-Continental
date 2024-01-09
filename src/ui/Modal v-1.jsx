@@ -2,9 +2,6 @@ import { createPortal } from "react-dom";
 import { HiXMark } from "react-icons/hi2";
 import styled from "styled-components";
 
-import { cloneElement, createContext, useContext, useState } from "react";
-import useOutsideClick from "../hooks/useOutsideClick.js";
-
 const StyledModal = styled.div`
   position: fixed;
   top: 50%;
@@ -54,47 +51,23 @@ const Button = styled.button`
   }
 `;
 
-const ModalContext = createContext();
-
-function Modal({ children }) {
-  const [openName, setOpenName] = useState("");
-  const close = () => setOpenName("");
-  const open = setOpenName;
-  return (
-    <ModalContext.Provider value={{ open, close, openName }}>
-      {children}
-    </ModalContext.Provider>
-  );
-}
-
-function Open({ children, opens: opensWindowName }) {
-  const { open } = useContext(ModalContext);
-  // return children;
-  return cloneElement(children, { onClick: () => open(opensWindowName) }); // returns a new identical element where we can modify props as well.
-}
-
-function Window({ children, name }) {
-  const { openName, close } = useContext(ModalContext);
-
-  const ref = useOutsideClick(close);
-
-  if (name !== openName) return null;
+function Modal({ children, onClose }) {
+  // React portal : A feature which allows us to render and element outside the parent's
+  // component dom structure while maintaining the same position in the component tree.
+  // The use of this is in order to avoid conficts with css properties of overflow set to hidden.
 
   return createPortal(
     <Overlay>
-      <StyledModal ref={ref}>
-        <Button onClick={close}>
+      <StyledModal>
+        <Button onClick={onClose}>
           <HiXMark />
         </Button>
-        <div>{cloneElement(children, { onCloseModal: close })}</div>
+        {children}
       </StyledModal>
       ;
     </Overlay>,
     document.body
-  );
+  ); // first arguement of createPortal is jsx and second is where we want to place it in the dom (dom node).
 }
-
-Modal.Open = Open;
-Modal.Window = Window;
 
 export default Modal;
