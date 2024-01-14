@@ -3,13 +3,6 @@ import { getToday } from "../utils/helpers";
 import supabase from "./supabase";
 
 export async function getBookings({ filter, sortBy, page }) {
-  // const { data, error } = await supabase
-  //   .from("bookings")
-  //   // .select("*,cabins(*),guests(*)");
-  //   .select(
-  //     "id,created_at,startDate,endDate,numNights,numGuests,status,totalPrice ,cabins(name),guests(fullName,email)"
-  //   );
-
   let query = supabase
     .from("bookings")
     // .select("*,cabins(*),guests(*)");
@@ -36,7 +29,6 @@ export async function getBookings({ filter, sortBy, page }) {
   }
 
   const { data, error, count } = await query;
-  // console.log(count);
 
   if (error) {
     console.error(error);
