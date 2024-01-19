@@ -2,7 +2,7 @@
 import styled from "styled-components";
 import { formatCurrency } from "../../utils/helpers.js";
 import CreateCabinForm from "./CreateCabinForm.jsx";
-import { useDeleteCabin } from "./DeleteCabin.js";
+import { useDeleteCabin } from "./useDeleteCabin.js";
 import { HiSquare2Stack, HiTrash, HiPencil } from "react-icons/hi2";
 import { useCreateCabin } from "./useCreateCabin.js";
 import Modal from "../../ui/Modal.jsx";
