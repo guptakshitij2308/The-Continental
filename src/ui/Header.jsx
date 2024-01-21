@@ -17,7 +17,6 @@ const Header = () => {
   return (
     <StyledHeader>
       <UserAvatar />
-
       <HeaderMenu />
     </StyledHeader>
   );
