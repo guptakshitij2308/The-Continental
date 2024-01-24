@@ -16,6 +16,7 @@ import { useCheckout } from "./useCheckout";
 import { useDeleteBooking } from "./useDeleteBooking.js";
 import Modal from "../../ui/Modal.jsx";
 import ConfirmDelete from "../../ui/ConfirmDelete.jsx";
+import Empty from "../../ui/Empty.jsx";
 
 const HeadingGroup = styled.div`
   display: flex;
@@ -32,6 +33,9 @@ function BookingDetail() {
   const { deleteBooking, isDeleting } = useDeleteBooking();
 
   if (isLoading) return <Spinner />;
+
+  if (!booking) return <Empty resourceName="booking" />;
+
   const { status, id: bookingId } = booking || {};
 
   const statusToTagName = {
